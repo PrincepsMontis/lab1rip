@@ -123,5 +123,9 @@ inventory-manager/
 
 ---
 ## 5. Запуск
+
+``` bash
 mvn clean test
 mvn spring-boot:run
+
+```
