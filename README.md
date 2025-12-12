@@ -34,6 +34,7 @@
 
 ## 2. Архитектура и пакеты
 
+```text
 Корень проекта:
 inventory-manager/
   pom.xml
@@ -85,7 +86,7 @@ inventory-manager/
           MovementServiceTest.java
         report/
           ReportServiceTest.java
-
+```
 ---
 
 ## 3. Валидация и обработка ошибок
