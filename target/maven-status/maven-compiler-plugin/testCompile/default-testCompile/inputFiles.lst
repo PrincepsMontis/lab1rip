@@ -1,0 +1,7 @@
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/service/MovementServiceTest.java
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/service/ItemServiceTest.java
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/controler/MovementControllerTest.java
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/repository/LocationRepositoryTest.java
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/InventoryManagerIntegrationTest.java
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/repository/ItemRepositoryTest.java
+/home/vagab/Documents/inventory-manager/src/test/java/com/inventory/manager/controler/ItemControllerTest.java

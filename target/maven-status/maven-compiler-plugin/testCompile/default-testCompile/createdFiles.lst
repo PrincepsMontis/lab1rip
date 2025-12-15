@@ -1,0 +1,7 @@
+com/inventory/manager/controller/ItemControllerTest.class
+com/inventory/manager/service/MovementServiceTest.class
+com/inventory/manager/repository/ItemRepositoryTest.class
+com/inventory/manager/InventoryManagerIntegrationTest.class
+com/inventory/manager/repository/LocationRepositoryTest.class
+com/inventory/manager/service/ItemServiceTest.class
+com/inventory/manager/controller/MovementControllerTest.class

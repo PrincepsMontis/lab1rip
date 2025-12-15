@@ -24,23 +24,23 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MovementServiceTest {
-    
+
     @Mock
     private MovementRepository movementRepository;
-    
+
     @Mock
     private ItemRepository itemRepository;
-    
+
     @Mock
     private LocationRepository locationRepository;
-    
+
     @InjectMocks
     private MovementService movementService;
-    
+
     private Item testItem;
     private Location fromLocation;
     private Location toLocation;
-    
+
     @BeforeEach
     void setUp() {
         fromLocation = Location.builder()
@@ -48,13 +48,13 @@ class MovementServiceTest {
                 .name("From Location")
                 .code("FROM-001")
                 .build();
-        
+
         toLocation = Location.builder()
                 .id(2L)
                 .name("To Location")
                 .code("TO-001")
                 .build();
-        
+
         testItem = Item.builder()
                 .id(1L)
                 .name("Test Item")
@@ -62,9 +62,10 @@ class MovementServiceTest {
                 .quantity(50)
                 .unitPrice(BigDecimal.valueOf(99.99))
                 .location(fromLocation)
+                .status(Item.ItemStatus.AVAILABLE)
                 .build();
     }
-    
+
     @Test
     void whenCreateTransferMovement_thenQuantityIsUpdated() {
         // given
@@ -76,21 +77,31 @@ class MovementServiceTest {
                 .type(Movement.MovementType.TRANSFER)
                 .performedBy("Admin")
                 .build();
-        
+
         when(itemRepository.findById(1L)).thenReturn(Optional.of(testItem));
         when(locationRepository.findById(1L)).thenReturn(Optional.of(fromLocation));
         when(locationRepository.findById(2L)).thenReturn(Optional.of(toLocation));
-        when(movementRepository.save(any(Movement.class))).thenReturn(new Movement());
-        
+
+        // Mock возвращает Movement с заполненным item
+        Movement savedMovement = Movement.builder()
+                .id(1L)
+                .item(testItem)
+                .type(Movement.MovementType.TRANSFER)
+                .quantity(10)
+                .fromLocation(fromLocation)
+                .toLocation(toLocation)
+                .build();
+        when(movementRepository.save(any(Movement.class))).thenReturn(savedMovement);
+
         // when
         movementService.createMovement(movementDTO);
-        
+
         // then
         assertThat(testItem.getQuantity()).isEqualTo(40); // 50 - 10
         verify(itemRepository, times(1)).save(testItem);
         verify(movementRepository, times(1)).save(any(Movement.class));
     }
-    
+
     @Test
     void whenTransferInsufficientQuantity_thenThrowException() {
         // given
@@ -101,16 +112,16 @@ class MovementServiceTest {
                 .quantity(100) // Больше чем есть
                 .type(Movement.MovementType.TRANSFER)
                 .build();
-        
+
         when(itemRepository.findById(1L)).thenReturn(Optional.of(testItem));
         when(locationRepository.findById(2L)).thenReturn(Optional.of(toLocation));
-        
+
         // then
         assertThatThrownBy(() -> movementService.createMovement(movementDTO))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("Insufficient quantity");
     }
-    
+
     @Test
     void whenCreateReceiptMovement_thenQuantityIncreases() {
         // given
@@ -120,16 +131,26 @@ class MovementServiceTest {
                 .quantity(20)
                 .type(Movement.MovementType.RECEIPT)
                 .build();
-        
+
         when(itemRepository.findById(1L)).thenReturn(Optional.of(testItem));
         when(locationRepository.findById(2L)).thenReturn(Optional.of(toLocation));
-        when(movementRepository.save(any(Movement.class))).thenReturn(new Movement());
-        
+
+        // Mock возвращает Movement с заполненным item
+        Movement savedMovement = Movement.builder()
+                .id(1L)
+                .item(testItem)
+                .type(Movement.MovementType.RECEIPT)
+                .quantity(20)
+                .toLocation(toLocation)
+                .build();
+        when(movementRepository.save(any(Movement.class))).thenReturn(savedMovement);
+
         // when
         movementService.createMovement(movementDTO);
-        
+
         // then
         assertThat(testItem.getQuantity()).isEqualTo(70); // 50 + 20
         verify(itemRepository, times(1)).save(testItem);
+        verify(movementRepository, times(1)).save(any(Movement.class));
     }
 }
